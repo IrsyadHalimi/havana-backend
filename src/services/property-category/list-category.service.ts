@@ -2,7 +2,7 @@
 import {
   PropertyCategoryRepository
 }
-from "../../repositories/poperty-category/property-category.repository";
+from "../../repositories/property-category/property-category.repository";
 
 import {
   getPagination

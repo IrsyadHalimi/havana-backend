@@ -1,10 +1,9 @@
 import { ConflictError }
 from "../../errors/conflict.error";
-
 import {
   PropertyCategoryRepository
 }
-from "../../repositories/poperty-category/property-category.repository";
+from "../../repositories/property-category/property-category.repository";
 
 export class CreateCategoryService {
 

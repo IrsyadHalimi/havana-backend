@@ -21,6 +21,18 @@ from "../controllers/property-category/list-category.controller";
 import { createCategorySchema }
 from "../validators/property-category/create-category.validator";
 
+import { DetailCategoryController }
+from "../controllers/property-category/detail-category.controller";
+
+import { UpdateCategoryController }
+from "../controllers/property-category/update-category.controller";
+
+import { DeleteCategoryController }
+from "../controllers/property-category/delete-category.controller";
+
+import { updateCategorySchema }
+from "../validators/property-category/update-category.validator";
+
 const router = Router();
 
 const createController =
@@ -28,6 +40,15 @@ const createController =
 
 const listController =
   new ListCategoryController();
+
+const detailController =
+  new DetailCategoryController();
+
+const updateController =
+  new UpdateCategoryController();
+
+const deleteController =
+  new DeleteCategoryController();
 
 router.use(
   authMiddleware
@@ -51,6 +72,30 @@ router.get(
   "/",
   asyncHandler(
     listController.handle
+  )
+);
+
+router.get(
+  "/:id",
+  asyncHandler(
+    detailController.handle
+  )
+);
+
+router.patch(
+  "/:id",
+  validate(
+    updateCategorySchema
+  ),
+  asyncHandler(
+    updateController.handle
+  )
+);
+
+router.delete(
+  "/:id",
+  asyncHandler(
+    deleteController.handle
   )
 );
 

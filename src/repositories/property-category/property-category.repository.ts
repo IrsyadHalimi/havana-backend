@@ -118,4 +118,28 @@ export class PropertyCategoryRepository {
       }
     });
   }
+
+  findByIdAndTenant(
+    id: string,
+    tenantId: string
+  ) {
+    return prisma.propertyCategory.findFirst({
+      where: {
+        id,
+        tenantId,
+        deletedAt: null
+      }
+    });
+  }
+
+  findPropertyUsage(
+    categoryId: string
+  ) {
+    return prisma.property.count({
+      where: {
+        categoryId,
+        deletedAt: null
+      }
+    });
+  }
 }
