@@ -39,4 +39,12 @@ export class EmailVerificationRepository {
       }
     });
   }
+
+  deleteByUserId(userId: string) {
+    return prisma.emailVerification.deleteMany({
+      where: {
+        userId
+      }
+    });
+  }
 }

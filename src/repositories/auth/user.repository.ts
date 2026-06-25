@@ -89,4 +89,20 @@ export class UserRepository {
       }
     });
   }
+
+  updateEmail(
+    userId: string,
+    email: string
+  ) {
+    return prisma.user.update({
+      where: {
+        id: userId
+      },
+      data: {
+        email,
+        isVerified: false,
+        emailVerifiedAt: null
+      }
+    });
+  }
 }
