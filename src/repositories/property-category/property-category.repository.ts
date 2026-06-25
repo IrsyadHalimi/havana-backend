@@ -1,4 +1,7 @@
 import { prisma } from "../../config/prisma";
+import {
+  getSorting
+} from "../../utils/query/sorting";
 
 interface FindAllParams {
   tenantId: string;
@@ -69,10 +72,10 @@ export class PropertyCategoryRepository {
       },
       skip,
       take,
-      orderBy: {
-        [sort || "createdAt"]:
-          order || "desc"
-      }
+      orderBy: getSorting(
+        sort,
+        order
+      )
     });
   }
 
