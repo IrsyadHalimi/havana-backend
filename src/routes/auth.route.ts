@@ -1,6 +1,9 @@
 import { Router }
 from "express";
 
+import { LoginController }
+from "../controllers/auth/login.controller";
+
 import { RegisterController }
 from "../controllers/auth/register.controller";
 
@@ -27,6 +30,9 @@ from "../validators/auth/verify-email.validator";
 
 const router = Router();
 
+const loginController =
+ new LoginController();
+
 const registerController =
  new RegisterController();
 
@@ -35,6 +41,12 @@ const verifyEmailController =
 
 const resendVerificationController =
   new ResendVerificationController();
+
+  
+router.post(
+  "/login",
+  loginController.handle
+);
 
 router.post(
   "/register",
