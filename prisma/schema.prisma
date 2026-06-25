@@ -1,0 +1,93 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  customer
+  tenant
+}
+model User {
+
+  id String @id @default(uuid())
+
+  role UserRole
+
+  email String @unique
+
+  password String?
+
+  fullName String
+
+  phone String?
+
+  avatar String?
+
+  isVerified Boolean @default(false)
+
+  emailVerifiedAt DateTime?
+
+  lastLoginAt DateTime?
+
+  refreshToken String?
+
+  createdAt DateTime @default(now())
+
+  updatedAt DateTime @updatedAt
+
+  deletedAt DateTime?
+
+  emailVerifications EmailVerification[]
+
+  passwordResets PasswordReset[]
+
+  notifications Notification[]
+
+  @@map("users")
+}
+
+model EmailVerification {
+  id        Int       @id @default(autoincrement())
+  userId    String
+  token     String    @unique
+  expiredAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  // FIX THIS LINE:
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("email_verifications")
+}
+
+model PasswordReset {
+  id        Int       @id @default(autoincrement())
+  userId    String
+  token     String    @unique
+  expiredAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  // FIX THIS LINE:
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("password_resets")
+}
+
+model Notification {
+  id        Int      @id @default(autoincrement())
+  userId    String
+  title     String
+  message   String
+  isRead    Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  // FIX THIS LINE:
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
