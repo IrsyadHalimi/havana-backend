@@ -1,7 +1,8 @@
 import { addHours } from "date-fns";
 
 import {
-  AppError
+  AppError,
+  createAppError
 } from "../../errors/app.error";
 
 import {
@@ -9,16 +10,12 @@ import {
 } from "../../utils/token";
 
 import {
-  userRepository
-} from "../../repositories/auth/user.repository";
-
-import {
   emailVerificationRepository
 } from "../../repositories/auth/email-verification.repository";
+import { findUserByEmail, findUserById, updateUser } from "../../repositories/auth/user.repository";
 
 
 export const changeEmailService = (
-  userRepo = userRepository(),
   verificationRepo = emailVerificationRepository()
 ) => ({
 
@@ -28,39 +25,39 @@ export const changeEmailService = (
   ) => {
 
     const user =
-      await userRepo.findById(
+      await findUserById(
         userId
       );
 
     if (!user) {
-      throw new AppError(
+      throw createAppError(
         "User not found",
         404
       );
     }
 
     if (user.email === email) {
-      throw new AppError(
+      throw createAppError(
         "Email must be different",
         400
       );
     }
 
     const existingEmail =
-      await userRepo.findByEmail(
+      await findUserByEmail(
         email
       );
 
     if (existingEmail) {
-      throw new AppError(
+      throw createAppError(
         "Email already registered",
         409
       );
     }
 
-    await userRepo.updateEmail(
+    await updateUser(
       userId,
-      email
+      { email }
     );
 
     await verificationRepo.deleteByUserId(

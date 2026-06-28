@@ -1,109 +1,95 @@
 import { prisma } from "../../config/prisma";
 
-export const userRepository = () => ({
-  create: (data: any) => {
-    return prisma.user.create({
-      data,
-    });
-  },
+import { Prisma } from "@prisma/client";
 
-  findByEmail: (email: string) => {
-    return prisma.user.findUnique({
-      where: {
-        email,
-      },
-    });
-  },
+export const findUserById = (
+  id: string
+) => {
+  return prisma.user.findUnique({
+    where: {
+      id
+    }
+  });
+};
 
-  findById: (id: string) => {
-    return prisma.user.findUnique({
-      where: {
-        id,
-      },
-    });
-  },
+export const findUserByEmail = (
+  email: string
+) => {
 
-  verifyUser: (
-    userId: string,
-    hashedPassword: string
-  ) => {
-    return prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        password: hashedPassword,
-        isVerified: true,
-        emailVerifiedAt: new Date(),
-      },
-    });
-  },
+  return prisma.user.findUnique({
+    where: {
+      email: email
+    }
+  });
+};
 
-  updatePassword: (
-    userId: string,
-    password: string
-  ) => {
-    return prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        password,
-      },
-    });
-  },
+export const createUser = (
+  data: Prisma.UserCreateInput
+) => {
+  return prisma.user.create({
+    data
+  });
+};
 
-  updateRefreshToken: (
-    userId: string,
-    refreshToken: string
-  ) => {
-    return prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        refreshToken,
-        lastLoginAt: new Date(),
-      },
-    });
-  },
+export const updateUser = (
+  id: string,
+  data: Prisma.UserUpdateInput
+) => {
+  return prisma.user.update({
+    where: {
+      id
+    },
+    data
+  });
+};
 
-  findByRefreshToken: (
-    refreshToken: string
-  ) => {
-    return prisma.user.findFirst({
-      where: {
-        refreshToken,
-      },
-    });
-  },
+export const saveRefreshToken = (
+  userId: string,
+  refreshToken: string
+) => {
+  return prisma.user.update({
+    where: {
+      id: userId
+    },
+    data: {
+      refreshToken
+    }
+  });
+};
 
-  removeRefreshToken: (
-    userId: string
-  ) => {
-    return prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        refreshToken: null,
-      },
-    });
-  },
+export const findUserByRefreshToken = (
+  refreshToken: string
+) => {
+  return prisma.user.findFirst({
+    where: {
+      refreshToken,
+      deletedAt: null
+    }
+  });
+};
 
-  updateEmail: (
-    userId: string,
-    email: string
-  ) => {
-    return prisma.user.update({
-      where: {
-        id: userId,
-      },
-      data: {
-        email,
-        isVerified: false,
-        emailVerifiedAt: null,
-      },
-    });
-  },
-});
+export const removeRefreshToken = (
+  userId: string
+) => {
+  return prisma.user.update({
+    where: {
+      id: userId
+    },
+    data: {
+      refreshToken: null
+    }
+  });
+};
+
+export const updateLastLogin = (
+  userId: string
+) => {
+  return prisma.user.update({
+    where: {
+      id: userId
+    },
+    data: {
+      lastLoginAt: new Date()
+    }
+  });
+};

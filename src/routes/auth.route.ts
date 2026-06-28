@@ -21,7 +21,6 @@ from "../validators/auth/verify-email.validator";
 
 const router = Router();
 
-  
 router.post(
   "/login",
   login

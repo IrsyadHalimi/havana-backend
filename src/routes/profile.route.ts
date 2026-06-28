@@ -6,7 +6,7 @@ from "../middleware/validation.middleware";
 import { authMiddleware }
 from "../middleware/auth.middleware";
 
-import { ProfileController }
+import { changePassword, getProfile, reverifyEmail }
 from "../controllers/profile/profile.controller";
 
 import { asyncHandler }
@@ -15,19 +15,13 @@ from "../utils/async-handler";
 import { changePasswordSchema }
 from "../validators/profile/change-password.validator";
 
-import { changeEmailSchema }
-from "../validators/profile/change-email.validator";
-
 const router = Router();
-
-const controller =
-  new ProfileController();
 
 router.get(
   "/me",
   authMiddleware,
   asyncHandler(
-    controller.getProfile
+    getProfile
   )
 );
 
@@ -38,18 +32,7 @@ router.patch(
     changePasswordSchema
   ),
   asyncHandler(
-    controller.changePassword
-  )
-);
-
-router.patch(
-  "/change-email",
-  authMiddleware,
-  validate(
-    changeEmailSchema
-  ),
-  asyncHandler(
-    controller.changeEmail
+    changePassword
   )
 );
 
@@ -57,7 +40,7 @@ router.post(
   "/reverify-email",
   authMiddleware,
   asyncHandler(
-    controller.reverifyEmail
+    reverifyEmail
   )
 );
 

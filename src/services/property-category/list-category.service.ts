@@ -1,5 +1,6 @@
 import {
-  PropertyCategoryRepository
+  findAllPropertyCategories,
+  countPropertyCategories
 } from "../../repositories/property-category/property-category.repository";
 
 import {
@@ -11,9 +12,7 @@ import {
 } from "../../utils/paginated-reponse";
 
 
-export const listCategory = (
-  repository = PropertyCategoryRepository()
-) => async (
+export const listCategory = () => async (
   tenantId: string,
   query: any
 ) => {
@@ -33,7 +32,7 @@ export const listCategory = (
   );
 
   const data =
-    await repository.findAll({
+    await findAllPropertyCategories({
       tenantId,
       search: query.search,
       sort: query.sort,
@@ -43,7 +42,7 @@ export const listCategory = (
     });
 
   const total =
-    await repository.count(
+    await countPropertyCategories(
       tenantId,
       query.search
     );

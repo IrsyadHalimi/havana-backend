@@ -1,5 +1,8 @@
 import {
-  RoomRepository
+  createPropertyRoom,
+  findPropertyRoomById,
+  findAllPropertyRooms,
+  countPropertyRooms
 } from "../../repositories/room/room.repository";
 
 import {
@@ -11,9 +14,7 @@ import {
 } from "../../utils/query/paginated-response";
 
 
-export const listRoom = (
-  repository = RoomRepository()
-) => async (
+export const listRoom = () => async (
   tenantId: string,
   propertyId: string,
   query: any
@@ -33,17 +34,18 @@ export const listRoom = (
     limit
   );
 
+  let search = query.search;
   const data =
-    await repository.findAllByProperty(
+    await findAllPropertyRooms({
       propertyId,
       tenantId,
       skip,
       take,
-      query.search
-    );
+      search
+    });
 
   const total =
-    await repository.countByProperty(
+    await countPropertyRooms(
       propertyId,
       tenantId,
       query.search

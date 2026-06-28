@@ -1,31 +1,30 @@
-import { ConflictError }
+import { createConflictError }
 from "../../errors/conflict.error";
 
 import {
-  PropertyCategoryRepository
+  createPropertyCategory,
+  findPropertyCategoryByName
 } from "../../repositories/property-category/property-category.repository";
 
 
-export const createCategory = (
-  repository = PropertyCategoryRepository()
-) => async (
+export const createCategory = () => async (
   tenantId: string,
   name: string
 ) => {
 
   const exists =
-    await repository.findByName(
+    await findPropertyCategoryByName(
       tenantId,
       name
     );
 
   if (exists) {
-    throw new ConflictError(
+    throw createConflictError(
       "Category already exists"
     );
   }
 
-  return repository.create(
+  return createPropertyCategory(
     tenantId,
     name
   );

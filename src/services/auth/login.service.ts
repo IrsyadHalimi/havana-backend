@@ -12,7 +12,10 @@ import {
 } from "../../errors/unauthorized.error";
 
 import {
-  userRepository
+  createUser,
+  findUserByEmail,
+  saveRefreshToken,
+  updateUser
 } from "../../repositories/auth/user.repository";
 
 
@@ -21,23 +24,21 @@ export const loginService = () => ({
     email: string,
     password: string
   ) => {
-    const userRepo =
-      userRepository();
 
     const user =
-      await userRepo.findByEmail(email);
+      await findUserByEmail(email);
 
     if (!user) {
-      throw new UnauthorizedError(
+      throw UnauthorizedError(
         "Invalid credentials"
       );
     }
 
     if (!user.password) {
-      throw new UnauthorizedError(
+      throw UnauthorizedError(
         "Account not verified"
       );
-    }
+    } 
 
     const matched =
       await comparePassword(
@@ -46,7 +47,7 @@ export const loginService = () => ({
       );
 
     if (!matched) {
-      throw new UnauthorizedError(
+      throw UnauthorizedError(
         "Invalid credentials"
       );
     }
@@ -66,7 +67,7 @@ export const loginService = () => ({
         payload
       );
 
-    await userRepo.updateRefreshToken(
+    await saveRefreshToken(
       user.id,
       refreshToken
     );

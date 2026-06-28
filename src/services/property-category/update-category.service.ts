@@ -1,36 +1,36 @@
-import { ConflictError }
+import {createConflictError }
 from "../../errors/conflict.error";
 
 import { NotFoundError }
 from "../../errors/not-found.error";
 
 import {
-  PropertyCategoryRepository
+  findPropertyCategoryByIdAndTenant,
+  findPropertyCategoryByName,
+  updatePropertyCategory
 } from "../../repositories/property-category/property-category.repository";
 
 
-export const updateCategory = (
-  repository = PropertyCategoryRepository()
-) => async (
+export const updateCategory = () => async (
   tenantId: string,
   categoryId: string,
   name: string
 ) => {
 
   const category =
-    await repository.findByIdAndTenant(
+    await findPropertyCategoryByIdAndTenant(
       categoryId,
       tenantId
     );
 
   if (!category) {
-    throw new NotFoundError(
+    throw NotFoundError(
       "Category not found"
     );
   }
 
   const duplicate =
-    await repository.findByName(
+    await findPropertyCategoryByName(
       tenantId,
       name
     );
@@ -39,12 +39,12 @@ export const updateCategory = (
     duplicate &&
     duplicate.id !== categoryId
   ) {
-    throw new ConflictError(
+    throw createConflictError(
       "Category already exists"
     );
   }
 
-  return repository.update(
+  return updatePropertyCategory(
     categoryId,
     name
   );

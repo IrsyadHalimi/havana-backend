@@ -1,7 +1,8 @@
 import { addHours } from "date-fns";
 
 import {
-  AppError
+  AppError,
+  createAppError
 } from "../../errors/app.error";
 
 import {
@@ -9,16 +10,23 @@ import {
 } from "../../utils/token";
 
 import {
-  userRepository
+  createUser,
+  findUserByEmail,
 } from "../../repositories/auth/user.repository";
 
 import {
   emailVerificationRepository
 } from "../../repositories/auth/email-verification.repository";
 
+import {
+  sendMail
+} from "../../providers/mail/send-mail.provider";
+
+import {
+  verificationEmailTemplate
+} from "../../providers/mail/templates/verification-email";
 
 export const resendVerificationService = (
-  userRepo = userRepository(),
   verificationRepo = emailVerificationRepository()
 ) => ({
 
@@ -27,19 +35,17 @@ export const resendVerificationService = (
   ) => {
 
     const user =
-      await userRepo.findByEmail(
-        email
-      );
+      await findUserByEmail(email);
 
     if (!user) {
-      throw new AppError(
+      throw createAppError(
         "User not found",
         404
       );
     }
 
     if (user.isVerified) {
-      throw new AppError(
+      throw createAppError(
         "Email already verified",
         400
       );
@@ -60,6 +66,17 @@ export const resendVerificationService = (
         new Date(),
         1
       )
+    });
+
+    let body = verificationEmailTemplate(
+      user.fullName,
+      "http://localhost:5173"
+    )
+
+    await sendMail({
+      to: user.email,
+      subject: "Selamat Datang di Havana! 🍃",
+      html: body,
     });
 
     return {

@@ -2,15 +2,15 @@ import { addHours } from "date-fns";
 
 import { generateToken } from "../../utils/token";
 
-import { userRepository } from "../../repositories/auth/user.repository";
+import { createUser, findUserByEmail } from "../../repositories/auth/user.repository";
 import { passwordResetRepository } from "../../repositories/auth/password-reset.repository";
 
 export const forgotPasswordService = (
-  userRepo = userRepository(),
+  userRepo = createUser,
   resetRepo = passwordResetRepository()
 ) => ({
   execute: async (email: string) => {
-    const user = await userRepo.findByEmail(email);
+    const user = await findUserByEmail(email);
 
     if (!user) {
       return {

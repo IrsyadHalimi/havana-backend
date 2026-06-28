@@ -1,5 +1,6 @@
 import {
-  AppError
+  AppError,
+  createAppError
 } from "../../errors/app.error";
 
 import {
@@ -7,13 +8,13 @@ import {
 } from "../../errors/not-found.error";
 
 import {
-  createAvailabilityRepository
+  createRoomAvailability,
+  findPropertyRoomById,
+  findRoomAvailabilityByDate
 } from "../../repositories/availability/availability.repository";
 
 
-export const createAvailabilityService = (
-  repository = createAvailabilityRepository()
-) => ({
+export const createAvailabilityService = () => ({
 
   execute: async (
     tenantId: string,
@@ -25,25 +26,25 @@ export const createAvailabilityService = (
   ) => {
 
     const room =
-      await repository.findRoom(
+      await findPropertyRoomById(
         roomId,
         tenantId
       );
 
     if (!room) {
-      throw new NotFoundError(
+      throw NotFoundError(
         "Room not found"
       );
     }
 
     const existing =
-      await repository.findByRoomAndDate(
+      await findRoomAvailabilityByDate(
         roomId,
         new Date(payload.date)
       );
 
     if (existing) {
-      throw new AppError(
+      throw createAppError(
         "Availability already exists",
         400
       );
@@ -53,13 +54,13 @@ export const createAvailabilityService = (
       payload.availableRooms >
       room.totalRoom
     ) {
-      throw new AppError(
+      throw createAppError(
         "Available room exceeds room stock",
         400
       );
     }
 
-    return repository.create({
+    return createRoomAvailability({
       roomId,
       date: new Date(payload.date),
       availableRooms:

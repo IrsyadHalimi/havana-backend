@@ -1,83 +1,125 @@
+import { Prisma } from "@prisma/client";
+
 import { prisma } from "../../config/prisma";
 
-export const createAvailabilityRepository = () => ({
-  create: (data: {
+export const createRoomAvailability = (
+  data: {
     roomId: string;
     date: Date;
     availableRooms: number;
-  }) => {
-    return prisma.roomAvailability.create({
-      data,
-    });
-  },
+  }
+) => {
+  return prisma.roomAvailability.create({
+    data
+  });
+};
 
-  findRoom: (
-    roomId: string,
-    tenantId: string
-  ) => {
-    return prisma.propertyRoom.findFirst({
-      where: {
-        id: roomId,
-        deletedAt: null,
 
+export const findPropertyRoomById = (
+  roomId: string,
+  tenantId: string
+) => {
+  return prisma.propertyRoom.findFirst({
+    where: {
+      id: roomId,
+      deletedAt: null,
+
+      property: {
+        tenantId,
+        deletedAt: null
+      }
+    }
+  });
+};
+
+export const findRoomAvailabilityByDate = (
+  roomId: string,
+  date: Date
+) => {
+  return prisma.roomAvailability.findFirst({
+    where: {
+      roomId,
+      date
+    }
+  });
+};
+
+export const findAllRoomAvailabilities = (
+  roomId: string,
+  startDate: Date,
+  endDate: Date
+) => {
+  return prisma.roomAvailability.findMany({
+    where: {
+      roomId,
+
+      date: {
+        gte: startDate,
+        lte: endDate
+      }
+    },
+
+    orderBy: {
+      date: "asc"
+    }
+  });
+};
+
+export const findRoomAvailabilityById = (
+  availabilityId: string,
+  tenantId: string
+) => {
+  return prisma.roomAvailability.findFirst({
+    where: {
+      id: availabilityId,
+
+      room: {
         property: {
           tenantId,
-        },
-      },
-    });
-  },
+          deletedAt: null
+        }
+      }
+    },
 
-  findByRoomAndDate: (
-    roomId: string,
-    date: Date
-  ) => {
-    return prisma.roomAvailability.findFirst({
-      where: {
-        roomId,
-        date,
-      },
-    });
-  },
+    include: {
+      room: {
+        include: {
+          property: true
+        }
+      }
+    }
+  });
+};
 
-  findAllByRoom: (
-    roomId: string,
-    startDate: Date,
-    endDate: Date
-  ) => {
-    return prisma.roomAvailability.findMany({
-      where: {
-        roomId,
+export const updateRoomAvailability = (
+  availabilityId: string,
+  data: Prisma.RoomAvailabilityUpdateInput
+) => {
+  return prisma.roomAvailability.update({
+    where: {
+      id: availabilityId
+    },
+    data
+  });
+};
 
-        date: {
-          gte: startDate,
-          lte: endDate,
-        },
-      },
+export const findRoomAvailabilitiesBetweenDates = (
+  roomId: string,
+  checkIn: Date,
+  checkOut: Date
+) => {
+  return prisma.roomAvailability.findMany({
+    where: {
+      roomId,
 
-      orderBy: {
-        date: "asc",
-      },
-    });
-  },
+      date: {
+        gte: checkIn,
+        lt: checkOut
+      }
+    },
 
-  findById: (
-    availabilityId: string,
-    tenantId: string
-  ) => {
-    return prisma.roomAvailability.findFirst({
-      where: {
-        id: availabilityId,
-
-        room: {
-          property: {
-            tenantId,
-          },
-        },
-      },
-
-      include: {
-        room: true,
-      },
-    });
-  },
-});
+    orderBy: {
+      date: "asc"
+    }
+  });
+};

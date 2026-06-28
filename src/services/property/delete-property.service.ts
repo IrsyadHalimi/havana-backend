@@ -1,31 +1,35 @@
+import { createAppError } from "../../errors/app.error";
 import { NotFoundError }
 from "../../errors/not-found.error";
 
 import {
-  PropertyRepository
+  create,
+  findPropertyById,
+  findPropertyBySlug,
+  findPropertyCategory,
+  deletePropertyRepository,
 } from "../../repositories/property/property.repository";
 
 
-export const deleteProperty = (
-  repository = PropertyRepository()
-) => async (
+export const deleteProperty = () => async (
   tenantId: string,
   propertyId: string
 ) => {
 
   const property =
-    await repository.findById(
+    await findPropertyById(
       propertyId,
       tenantId
     );
 
   if (!property) {
-    throw new NotFoundError(
-      "Property not found"
+    throw createAppError(
+      "Property not found",
+      404
     );
   }
 
-  await repository.softDelete(
+  await deletePropertyRepository(
     propertyId
   );
 

@@ -2,25 +2,23 @@ import { NotFoundError }
 from "../../errors/not-found.error";
 
 import {
-  PropertyCategoryRepository
+  findPropertyCategoryByIdAndTenant
 } from "../../repositories/property-category/property-category.repository";
 
 
-export const detailCategory = (
-  repository = PropertyCategoryRepository()
-) => async (
+export const detailCategory = () => async (
   tenantId: string,
   categoryId: string
 ) => {
 
   const category =
-    await repository.findByIdAndTenant(
+    await findPropertyCategoryByIdAndTenant(
       categoryId,
       tenantId
     );
 
   if (!category) {
-    throw new NotFoundError(
+    throw NotFoundError(
       "Category not found"
     );
   }

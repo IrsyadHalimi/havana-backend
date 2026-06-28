@@ -1,22 +1,23 @@
+import { createAppError } from "../../errors/app.error";
 import { NotFoundError }
 from "../../errors/not-found.error";
+import { findUserById } from "../../repositories/auth/user.repository";
 
 import { profileRepository }
 from "../../repositories/profile/profile.repository";
 
 
-export const getProfileService = (
-  profileRepo = profileRepository()
-) => async (
+export const getProfileService = () => async (
   userId: string
 ) => {
 
   const user =
-    await profileRepo.findById(userId);
+    await findUserById(userId);
 
   if (!user) {
-    throw new NotFoundError(
-      "User not found"
+    throw createAppError(
+      "User not found",
+      404
     );
   }
 

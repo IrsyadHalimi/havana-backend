@@ -2,31 +2,30 @@ import { NotFoundError }
 from "../../errors/not-found.error";
 
 import {
-  RoomRepository
+  createPropertyRoom,
+  findPropertyById,
 } from "../../repositories/room/room.repository";
 
 
-export const createRoom = (
-  repository = RoomRepository()
-) => async (
+export const createRoom = () => async (
   tenantId: string,
   propertyId: string,
   payload: any
 ) => {
 
   const property =
-    await repository.findProperty(
+    await findPropertyById(
       propertyId,
       tenantId
     );
 
   if (!property) {
-    throw new NotFoundError(
+    throw NotFoundError(
       "Property not found"
     );
   }
 
-  return repository.create({
+  return createPropertyRoom({
     propertyId,
     ...payload
   });

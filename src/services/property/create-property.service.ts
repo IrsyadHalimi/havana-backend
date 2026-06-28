@@ -1,8 +1,10 @@
-import { AppError }
+import { createAppError }
 from "../../errors/app.error";
 
 import {
-  PropertyRepository
+  create,
+  findPropertyBySlug,
+  findPropertyCategory,
 } from "../../repositories/property/property.repository";
 
 import {
@@ -10,21 +12,19 @@ import {
 } from "../../utils/slug";
 
 
-export const createProperty = (
-  repository = PropertyRepository()
-) => async (
+export const createProperty = () => async (
   tenantId: string,
   payload: any
 ) => {
 
   const category =
-    await repository.findCategory(
+    await findPropertyCategory(
       payload.categoryId,
       tenantId
     );
 
   if (!category) {
-    throw new AppError(
+    throw createAppError(
       "Category not found",
       404
     );
@@ -38,7 +38,7 @@ export const createProperty = (
   let counter = 1;
 
   while (
-    await repository.findBySlug(slug)
+    await findPropertyBySlug(slug)
   ) {
     slug =
       `${generateSlug(payload.name)}-${counter}`;
@@ -46,7 +46,7 @@ export const createProperty = (
     counter++;
   }
 
-  return repository.create({
+  return create({
     ...payload,
     tenantId,
     slug

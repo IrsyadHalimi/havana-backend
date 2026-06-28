@@ -1,10 +1,8 @@
-import { userRepository } from "../../repositories/auth/user.repository";
+import { updateUser } from "../../repositories/auth/user.repository";
 
-export const logoutService = (
-  userRepo = userRepository()
-) => ({
+export const logoutService = () => ({
   execute: async (userId: string) => {
-    await userRepo.removeRefreshToken(userId);
+    await updateUser(userId, { refreshToken: null });
 
     return {
       message: "Logout success",

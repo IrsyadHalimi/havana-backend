@@ -2,20 +2,19 @@ import { NotFoundError }
 from "../../errors/not-found.error";
 
 import {
-  RoomRepository
+  updatePropertyRoom,
+  findPropertyRoomById
 } from "../../repositories/room/room.repository";
 
 
-export const updateRoom = (
-  repository = RoomRepository()
-) => async (
+export const updateRoom = () => async (
   tenantId: string,
   roomId: string,
   payload: any
 ) => {
 
   const room =
-    await repository.findById(
+    await findPropertyRoomById(
       roomId,
       tenantId
     );
@@ -26,7 +25,7 @@ export const updateRoom = (
     );
   }
 
-  return repository.update(
+  return updatePropertyRoom(
     roomId,
     payload
   );

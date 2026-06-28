@@ -1,46 +1,46 @@
-import { AppError }
+import { AppError, createAppError }
 from "../../errors/app.error";
 
 import { NotFoundError }
 from "../../errors/not-found.error";
 
 import {
-  PropertyCategoryRepository
+  findPropertyCategoryByIdAndTenant,
+  countPropertyByCategory,
+  deletePropertyCategory
 } from "../../repositories/property-category/property-category.repository";
 
 
-export const deleteCategory = (
-  repository = PropertyCategoryRepository()
-) => async (
+export const deleteCategory = () => async (
   tenantId: string,
   categoryId: string
 ) => {
 
   const category =
-    await repository.findByIdAndTenant(
+    await findPropertyCategoryByIdAndTenant(
       categoryId,
       tenantId
     );
 
   if (!category) {
-    throw new NotFoundError(
+    throw NotFoundError(
       "Category not found"
     );
   }
 
   const usage =
-    await repository.findPropertyUsage(
+    await countPropertyByCategory(
       categoryId
     );
 
   if (usage > 0) {
-    throw new AppError(
+    throw createAppError(
       "Category is used by property",
       400
     );
   }
 
-  await repository.softDelete(
+  await deletePropertyCategory(
     categoryId
   );
 

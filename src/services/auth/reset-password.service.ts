@@ -3,21 +3,18 @@ import {
 } from "../../utils/password";
 
 import {
-  AppError
+  AppError,
+  createAppError
 } from "../../errors/app.error";
 
 import {
   passwordResetRepository
 } from "../../repositories/auth/password-reset.repository";
 
-import {
-  userRepository
-} from "../../repositories/auth/user.repository";
-
+import { updateUser } from "../../repositories/auth/user.repository";
 
 export const resetPasswordService = (
   resetRepo = passwordResetRepository(),
-  userRepo = userRepository()
 ) => ({
 
   execute: async (
@@ -31,7 +28,7 @@ export const resetPasswordService = (
       );
 
     if (!reset) {
-      throw new AppError(
+      throw createAppError(
         "Invalid token",
         400
       );
@@ -41,7 +38,7 @@ export const resetPasswordService = (
       reset.expiredAt <
       new Date()
     ) {
-      throw new AppError(
+      throw createAppError(
         "Token expired",
         400
       );
@@ -52,9 +49,9 @@ export const resetPasswordService = (
         password
       );
 
-    await userRepo.updatePassword(
+    await updateUser(
       reset.userId,
-      hashed
+      { password: hashed }
     );
 
     await resetRepo.markUsed(

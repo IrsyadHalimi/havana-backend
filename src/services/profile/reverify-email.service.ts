@@ -1,24 +1,23 @@
 import { addHours } from "date-fns";
-import { AppError } from "../../errors/app.error";
+import { AppError, createAppError } from "../../errors/app.error";
 import { generateToken } from "../../utils/token";
-import { userRepository } from "../../repositories/auth/user.repository";
 import { emailVerificationRepository } from "../../repositories/auth/email-verification.repository";
+import { findUserById } from "../../repositories/auth/user.repository";
 
 export const reverifyEmailService = (
-  userRepo = userRepository(),
   verificationRepo = emailVerificationRepository()
 ) => async (
   userId: string
 ) => {
 
-  const user = await userRepo.findById(userId);
+  const user = await findUserById(userId);
 
   if (!user) {
-    throw new AppError("User not found", 404);
+    throw createAppError("User not found", 404);
   }
 
   if (user.isVerified) {
-    throw new AppError("Email already verified", 400);
+    throw createAppError("Email already verified", 400);
   }
 
   await verificationRepo.deleteByUserId(userId);

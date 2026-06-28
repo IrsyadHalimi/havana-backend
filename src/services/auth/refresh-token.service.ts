@@ -1,16 +1,11 @@
+import { findUserByRefreshToken } from "../../repositories/auth/user.repository";
 import {
   verifyRefreshToken,
   generateAccessToken
 } from "../../utils/jwt";
 
-import {
-  userRepository
-} from "../../repositories/auth/user.repository";
 
-
-export const refreshTokenService = (
-  userRepo = userRepository()
-) => ({
+export const refreshTokenService = () => ({
 
   execute: async (
     refreshToken: string
@@ -22,7 +17,7 @@ export const refreshTokenService = (
       ) as any;
 
     const user =
-      await userRepo.findByRefreshToken(
+      await findUserByRefreshToken(
         refreshToken
       );
 

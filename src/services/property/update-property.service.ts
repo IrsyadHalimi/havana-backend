@@ -1,44 +1,44 @@
-import { NotFoundError }
-from "../../errors/not-found.error";
-
+import { createAppError } from "../../errors/app.error";
 import {
-  PropertyRepository
+  findPropertyById,
+  findPropertyCategory,
+  updatePropertyRepository
 } from "../../repositories/property/property.repository";
 
 
-export const updateProperty = (
-  repository = PropertyRepository()
-) => async (
+export const updateProperty = () => async (
   tenantId: string,
   propertyId: string,
   payload: any
 ) => {
 
   const category =
-    await repository.findCategory(
+    await findPropertyCategory(
       payload.categoryId,
       tenantId
     );
 
   if (!category) {
-    throw new NotFoundError(
-      "Category not found"
+    throw createAppError(
+      "Category not found",
+      404
     );
   }
 
   const property =
-    await repository.findById(
+    await findPropertyById(
       propertyId,
       tenantId
     );
 
   if (!property) {
-    throw new NotFoundError(
-      "Property not found"
+    throw createAppError(
+      "Property not found",
+      404
     );
   }
 
-  return repository.update(
+  return updatePropertyRepository(
     propertyId,
     payload
   );

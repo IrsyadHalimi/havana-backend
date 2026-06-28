@@ -12,7 +12,7 @@ from "../middleware/validation.middleware";
 import { asyncHandler }
 from "../utils/async-handler";
 
-import { PropertyCategoryController }
+import { create, detail, list, deleteCategoryCtrl, update }
 from "../controllers/property-category/property-category.controller";
 
 import { createCategorySchema }
@@ -22,9 +22,6 @@ import { updateCategorySchema }
 from "../validators/property-category/update-category.validator";
 
 const router = Router();
-
-const controller =
-  new PropertyCategoryController();
 
 router.use(
   authMiddleware
@@ -40,38 +37,38 @@ router.post(
     createCategorySchema
   ),
   asyncHandler(
-    controller.create
+    create
   )
 );
 
 router.get(
   "/",
   asyncHandler(
-    controller.list
+    list
   )
 );
 
 router.get(
   "/:id",
   asyncHandler(
-    controller.detail
+    detail
   )
 );
 
-router.patch(
+router.put(
   "/:id",
   validate(
     updateCategorySchema
   ),
   asyncHandler(
-    controller.update
+    update
   )
 );
 
 router.delete(
   "/:id",
   asyncHandler(
-    controller.delete
+    deleteCategoryCtrl
   )
 );
 

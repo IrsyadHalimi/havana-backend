@@ -13,7 +13,11 @@ import { asyncHandler }
 from "../utils/async-handler";
 
 import {
-  RoomController
+  create,
+  detail,
+  list,
+  deleteRoomCtrl,
+  update
 } from "../controllers/room/room.controller";
 
 import {
@@ -32,40 +36,35 @@ router.post(
   "/properties/:propertyId/rooms",
   validate(createRoomSchema),
   asyncHandler(
-    new RoomController()
-      .create
+    create
   )
 );
 
 router.get(
   "/properties/:propertyId/rooms",
   asyncHandler(
-    new RoomController()
-      .list
+    list
   )
 );
 
 router.get(
   "/rooms/:id",
   asyncHandler(
-    new RoomController()
-      .detail
+    detail
   )
 );
 
 router.patch(
   "/rooms/:id",
   asyncHandler(
-    new RoomController()
-      .update
+    update
   )
 );
 
 router.delete(
   "/rooms/:id",
   asyncHandler(
-    new RoomController()
-      .delete
+    deleteRoomCtrl
   )
 );
 

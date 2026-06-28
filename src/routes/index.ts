@@ -6,6 +6,13 @@ import availabilityRoute from "./availability.route";
 
 import profileRoute from "./profile.route";
 
+import propertyRoute from "./property.routes";
+
+import propertyCategoryRoute from "./property-category.route";
+
+import roomRoute from "./room.route";
+
+
 const router = Router();
 
 router.get("/", (req, res) => {
@@ -27,8 +34,23 @@ router.use(
 );
 
 router.use(
-  "/availibility",
+  "/availabilities",
   availabilityRoute
+);
+
+router.use(
+  "/properties",
+  propertyRoute
+);
+
+router.use(
+  "/property-categories",
+  propertyCategoryRoute
+);
+
+router.use(
+  "/room",
+  roomRoute
 );
 
 export default router;

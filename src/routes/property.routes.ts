@@ -13,7 +13,11 @@ import { asyncHandler }
 from "../utils/async-handler";
 
 import {
-  PropertyController
+  create,
+  detail,
+  list,
+  deleteCtrl,
+  update,
 } from "../controllers/property/property.controller";
 
 import {
@@ -26,8 +30,6 @@ import {
 
 const router = Router();
 
-const controller = new PropertyController();
-
 router.use(authMiddleware);
 
 router.use(
@@ -38,36 +40,36 @@ router.post(
   "/",
   validate(createPropertySchema),
   asyncHandler(
-    controller.create
+    create
   )
 );
 
 router.get(
   "/",
   asyncHandler(
-    controller.list
+    list
   )
 );
 
 router.get(
   "/:id",
   asyncHandler(
-    controller.detail
+    detail
   )
 );
 
-router.patch(
+router.put(
   "/:id",
   validate(updatePropertySchema),
   asyncHandler(
-    controller.update
+    update
   )
 );
 
 router.delete(
   "/:id",
   asyncHandler(
-    controller.delete
+    deleteCtrl
   )
 );
 

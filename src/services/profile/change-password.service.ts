@@ -1,33 +1,30 @@
-import { AppError } from "../../errors/app.error";
-
-import { userRepository } from "../../repositories/auth/user.repository";
+import { AppError, createAppError } from "../../errors/app.error";
 
 import {
   comparePassword,
   hashPassword
 } from "../../utils/password";
 
+import { findUserById, updateUser } from "../../repositories/auth/user.repository";
 
-export const changePasswordService = (
-  userRepo = userRepository()
-) => async (
+export const changePasswordService = () => async (
   userId: string,
   oldPassword: string,
   newPassword: string
 ) => {
 
   const user =
-    await userRepo.findById(userId);
+    await findUserById(userId);
 
   if (!user) {
-    throw new AppError(
+    throw createAppError(
       "User not found",
       404
     );
   }
 
   if (!user.password) {
-    throw new AppError(
+    throw createAppError(
       "Password not found",
       400
     );
@@ -40,7 +37,7 @@ export const changePasswordService = (
     );
 
   if (!isMatch) {
-    throw new AppError(
+    throw createAppError(
       "Old password is incorrect",
       400
     );
@@ -53,7 +50,7 @@ export const changePasswordService = (
     );
 
   if (samePassword) {
-    throw new AppError(
+    throw createAppError(
       "New password must be different",
       400
     );
@@ -64,13 +61,14 @@ export const changePasswordService = (
       newPassword
     );
 
-  await userRepo.updatePassword(
+  await updateUser(
     userId,
-    hashedPassword
+    { password: hashedPassword }
   );
 
-  await userRepo.removeRefreshToken(
-    userId
+  await updateUser(
+    userId,
+    { refreshToken: null }
   );
 
   return {

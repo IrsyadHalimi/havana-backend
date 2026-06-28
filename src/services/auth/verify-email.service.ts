@@ -7,11 +7,11 @@ import {
 } from "../../errors/not-found.error";
 
 import {
-  AppError
+  createAppError
 } from "../../errors/app.error";
 
 import {
-  userRepository
+  updateUser
 } from "../../repositories/auth/user.repository";
 
 import {
@@ -20,7 +20,6 @@ import {
 
 
 export const verifyEmailService = (
-  userRepo = userRepository(),
   verificationRepo = emailVerificationRepository()
 ) => ({
 
@@ -35,7 +34,7 @@ export const verifyEmailService = (
       );
 
     if (!verification) {
-      throw new NotFoundError(
+      throw NotFoundError(
         "Invalid token"
       );
     }
@@ -44,7 +43,7 @@ export const verifyEmailService = (
       verification.expiredAt <
       new Date()
     ) {
-      throw new AppError(
+      throw createAppError(
         "Token expired",
         400
       );
@@ -55,9 +54,9 @@ export const verifyEmailService = (
         password
       );
 
-    await userRepo.verifyUser(
+    await updateUser(
       verification.userId,
-      hashedPassword
+      { isVerified: true, password: hashedPassword }
     );
 
     await verificationRepo.markUsed(

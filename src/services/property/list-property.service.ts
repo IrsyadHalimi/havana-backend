@@ -1,5 +1,10 @@
 import {
-  PropertyRepository
+  create,
+  findPropertyById,
+  findPropertyBySlug,
+  findPropertyCategory,
+  findAllProperties,
+  countProperties
 } from "../../repositories/property/property.repository";
 
 import {
@@ -11,9 +16,7 @@ import {
 } from "../../utils/query/paginated-response";
 
 
-export const listProperty = (
-  repository = PropertyRepository()
-) => async (
+export const listProperty = () => async (
   tenantId: string,
   query: any
 ) => {
@@ -33,7 +36,7 @@ export const listProperty = (
   );
 
   const data =
-    await repository.findAll({
+    await findAllProperties({
       tenantId,
       search: query.search,
       skip,
@@ -43,7 +46,7 @@ export const listProperty = (
     });
 
   const total =
-    await repository.count(
+    await countProperties(
       tenantId,
       query.search
     );

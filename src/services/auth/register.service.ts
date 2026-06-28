@@ -1,7 +1,8 @@
 import { addHours } from "date-fns";
 
 import {
-  userRepository
+  createUser,
+  findUserByEmail
 } from "../../repositories/auth/user.repository";
 
 import {
@@ -13,12 +14,20 @@ import {
 } from "../../utils/token";
 
 import {
-  ConflictError
+  createConflictError
 } from "../../errors/conflict.error";
+
+import {
+  sendMail
+} from "../../providers/mail/send-mail.provider";
+
+import {
+  verificationEmailTemplate
+} from "../../providers/mail/templates/verification-email";
 
 
 export const registerService = (
-  userRepo = userRepository(),
+  userRepo = createUser,
   verificationRepo = emailVerificationRepository()
 ) => ({
 
@@ -27,18 +36,18 @@ export const registerService = (
   ) => {
 
     const existing =
-      await userRepo.findByEmail(
+      await findUserByEmail(
         data.email
       );
 
     if (existing) {
-      throw new ConflictError(
+      throw createConflictError(
         "Email already registered"
       );
     }
 
     const user =
-      await userRepo.create({
+      await createUser({
         fullName: data.fullName,
         email: data.email,
         role: data.role
@@ -56,10 +65,16 @@ export const registerService = (
       )
     });
 
-    /**
-     * next sprint:
-     * send email
-     */
+    let body = verificationEmailTemplate(
+      data.fullName,
+      "http://localhost:5173"
+    )
+
+    await sendMail({
+      to: data.email,
+      subject: "Selamat Datang di Havana! 🍃",
+      html: body,
+    });
 
     return {
       message:

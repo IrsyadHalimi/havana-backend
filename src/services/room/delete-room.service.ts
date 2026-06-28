@@ -2,30 +2,29 @@ import { NotFoundError }
 from "../../errors/not-found.error";
 
 import {
-  RoomRepository
+  deletePropertyRoom,
+  findPropertyRoomById
 } from "../../repositories/room/room.repository";
 
 
-export const deleteRoom = (
-  repository = RoomRepository()
-) => async (
+export const deleteRoom = () => async (
   tenantId: string,
   roomId: string
 ) => {
 
   const room =
-    await repository.findById(
+    await findPropertyRoomById(
       roomId,
       tenantId
     );
 
   if (!room) {
-    throw new NotFoundError(
+    throw NotFoundError(
       "Room not found"
     );
   }
 
-  await repository.softDelete(
+  await deletePropertyRoom(
     roomId
   );
 

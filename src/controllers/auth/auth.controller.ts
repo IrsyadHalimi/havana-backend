@@ -38,7 +38,7 @@ export const resendVerification = async (
   res: Response
 ) => {
   const result = await resendVerificationService().execute(
-    req.body
+    req.body.email
   );
 
   return res
