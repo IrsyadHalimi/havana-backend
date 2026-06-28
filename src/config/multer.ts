@@ -1,77 +1,59 @@
 import multer from "multer";
-
 import path from "path";
 
-import { ONE_MB }
-from "../utils/file";
+import { generateFileName }
+from "../utils/file/generate-file-name";
 
-const storage =
-  multer.diskStorage({
+import { imageFileFilter }
+from "../utils/file/image-file-filter";
 
-    destination(
-      req,
-      file,
-      cb
-    ) {
+const storage = multer.diskStorage({
 
-      cb(
-        null,
-        "uploads/avatar"
-      );
-    },
+  destination: (
+    req,
+    file,
+    callback
+  ) => {
 
-    filename(
-      req,
-      file,
-      cb
-    ) {
+    callback(
+      null,
+      path.join(
+        process.cwd(),
+        "uploads"
+      )
+    );
 
-      cb(
-        null,
-        Date.now() +
-        path.extname(
-          file.originalname
-        )
-      );
+  },
 
-    }
+  filename: (
+    req,
+    file,
+    callback
+  ) => {
 
-  });
+    callback(
+      null,
+      generateFileName(
+        file.originalname
+      )
+    );
 
-export const avatarUpload =
-  multer({
+  }
 
-    storage,
+});
 
-    limits: {
-      fileSize:
-        ONE_MB
-    },
+export const upload = multer({
 
-    fileFilter(
-      req,
-      file,
-      cb
-    ) {
+  storage,
 
-      const allowed =
-        [
-          ".jpg",
-          ".jpeg",
-          ".png",
-          ".gif"
-        ];
+  fileFilter:
+    imageFileFilter,
 
-      const ext =
-        path.extname(
-          file.originalname
-        );
+  limits: {
 
-      cb(
-        null,
-        allowed.includes(ext)
-      );
+    fileSize:
+      1024 * 1024
 
-    }
+  }
 
-  });
+});

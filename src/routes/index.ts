@@ -6,11 +6,14 @@ import availabilityRoute from "./availability.route";
 
 import profileRoute from "./profile.route";
 
-import propertyRoute from "./property.routes";
+import propertyRoute from "./property.route";
 
 import propertyCategoryRoute from "./property-category.route";
 
 import roomRoute from "./room.route";
+
+import reservationRoute
+from "./reservation.route";
 
 
 const router = Router();
@@ -51,6 +54,11 @@ router.use(
 router.use(
   "/room",
   roomRoute
+);
+
+router.use(
+  "/reservations",
+  reservationRoute
 );
 
 export default router;
