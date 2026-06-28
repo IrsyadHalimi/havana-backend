@@ -1,9 +1,5 @@
-import { AppError } from "./app.error";
+import { createAppError } from "./app.error";
 
-export class NotFoundError
-extends AppError {
-
-  constructor(message:string) {
-    super(message,404);
-  }
-}
+export const NotFoundError = (message: string) => {
+  return createAppError(message, 404);
+};

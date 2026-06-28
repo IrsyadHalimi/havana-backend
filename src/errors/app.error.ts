@@ -1,12 +1,16 @@
-export class AppError extends Error {
+// 1. Definisikan tipe untuk kustom AppError kamu
+export interface AppError extends Error {
   statusCode: number;
-
-  constructor(
-    message: string,
-    statusCode = 400
-  ) {
-    super(message);
-
-    this.statusCode = statusCode;
-  }
 }
+
+// 2. Buat factory function untuk men-generate objek error tersebut
+export const createAppError = (
+  message: string,
+  statusCode = 400
+): AppError => {
+  const error = new Error(message) as AppError;
+  error.statusCode = statusCode;
+  error.name = "AppError"; // Menandai nama error agar mudah di-filter di middleware
+
+  return error;
+};

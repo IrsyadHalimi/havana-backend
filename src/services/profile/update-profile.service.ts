@@ -1,27 +1,20 @@
-import { ProfileRepository }
+import { profileRepository }
 from "../../repositories/profile/profile.repository";
 
-export class UpdateProfileService {
 
-  constructor(
-    private profileRepo =
-      new ProfileRepository()
-  ) {}
+export const updateProfile = (
+  profileRepo = profileRepository()
+) => async (
+  userId: string,
+  data: any
+) => {
 
-  async execute(
-    userId: string,
-    data: any
-  ) {
+  await profileRepo.updateProfile(
+    userId,
+    data
+  );
 
-    await this.profileRepo
-      .updateProfile(
-        userId,
-        data
-      );
-
-    return {
-      message:
-        "Profile updated"
-    };
-  }
-}
+  return {
+    message: "Profile updated"
+  };
+};

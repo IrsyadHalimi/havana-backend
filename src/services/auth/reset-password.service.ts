@@ -1,33 +1,34 @@
-import { hashPassword }
-from "../../utils/password";
+import {
+  hashPassword
+} from "../../utils/password";
 
-import { AppError }
-from "../../errors/app.error";
+import {
+  AppError
+} from "../../errors/app.error";
 
-import { PasswordResetRepository }
-from "../../repositories/auth/password-reset.repository";
+import {
+  passwordResetRepository
+} from "../../repositories/auth/password-reset.repository";
 
-import { UserRepository }
-from "../../repositories/auth/user.repository";
+import {
+  userRepository
+} from "../../repositories/auth/user.repository";
 
-export class ResetPasswordService {
 
-  constructor(
-    private resetRepo =
-      new PasswordResetRepository(),
+export const resetPasswordService = (
+  resetRepo = passwordResetRepository(),
+  userRepo = userRepository()
+) => ({
 
-    private userRepo =
-      new UserRepository()
-  ) {}
-
-  async execute(
+  execute: async (
     token: string,
     password: string
-  ) {
+  ) => {
 
     const reset =
-      await this.resetRepo
-        .findValidToken(token);
+      await resetRepo.findValidToken(
+        token
+      );
 
     if (!reset) {
       throw new AppError(
@@ -51,18 +52,19 @@ export class ResetPasswordService {
         password
       );
 
-    await this.userRepo
-      .updatePassword(
-        reset.userId,
-        hashed
-      );
+    await userRepo.updatePassword(
+      reset.userId,
+      hashed
+    );
 
-    await this.resetRepo
-      .markUsed(reset.id);
+    await resetRepo.markUsed(
+      reset.id
+    );
 
     return {
       message:
-      "Password reset success"
+        "Password reset success"
     };
   }
-}
+
+});

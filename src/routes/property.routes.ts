@@ -13,24 +13,8 @@ import { asyncHandler }
 from "../utils/async-handler";
 
 import {
-  CreatePropertyController
-} from "../controllers/property/create-property.controller";
-
-import {
-  ListPropertyController
-} from "../controllers/property/list-property.controller";
-
-import {
-  DetailPropertyController
-} from "../controllers/property/detail-property.controller";
-
-import {
-  UpdatePropertyController
-} from "../controllers/property/update-property.controller";
-
-import {
-  DeletePropertyController
-} from "../controllers/property/delete-property.controller";
+  PropertyController
+} from "../controllers/property/property.controller";
 
 import {
   createPropertySchema
@@ -42,6 +26,8 @@ import {
 
 const router = Router();
 
+const controller = new PropertyController();
+
 router.use(authMiddleware);
 
 router.use(
@@ -52,24 +38,21 @@ router.post(
   "/",
   validate(createPropertySchema),
   asyncHandler(
-    new CreatePropertyController()
-      .handle
+    controller.create
   )
 );
 
 router.get(
   "/",
   asyncHandler(
-    new ListPropertyController()
-      .handle
+    controller.list
   )
 );
 
 router.get(
   "/:id",
   asyncHandler(
-    new DetailPropertyController()
-      .handle
+    controller.detail
   )
 );
 
@@ -77,16 +60,14 @@ router.patch(
   "/:id",
   validate(updatePropertySchema),
   asyncHandler(
-    new UpdatePropertyController()
-      .handle
+    controller.update
   )
 );
 
 router.delete(
   "/:id",
   asyncHandler(
-    new DeletePropertyController()
-      .handle
+    controller.delete
   )
 );
 

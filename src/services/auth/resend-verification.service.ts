@@ -1,31 +1,33 @@
 import { addHours } from "date-fns";
 
-import { AppError }
-from "../../errors/app.error";
+import {
+  AppError
+} from "../../errors/app.error";
 
-import { generateToken }
-from "../../utils/token";
+import {
+  generateToken
+} from "../../utils/token";
 
-import { UserRepository }
-from "../../repositories/auth/user.repository";
+import {
+  userRepository
+} from "../../repositories/auth/user.repository";
 
-import { EmailVerificationRepository }
-from "../../repositories/auth/email-verification.repository";
+import {
+  emailVerificationRepository
+} from "../../repositories/auth/email-verification.repository";
 
-export class ResendVerificationService {
 
-  constructor(
-    private userRepo =
-      new UserRepository(),
+export const resendVerificationService = (
+  userRepo = userRepository(),
+  verificationRepo = emailVerificationRepository()
+) => ({
 
-    private verificationRepo =
-      new EmailVerificationRepository()
-  ) {}
-
-  async execute(email: string) {
+  execute: async (
+    email: string
+  ) => {
 
     const user =
-      await this.userRepo.findByEmail(
+      await userRepo.findByEmail(
         email
       );
 
@@ -43,7 +45,7 @@ export class ResendVerificationService {
       );
     }
 
-    await this.verificationRepo
+    await verificationRepo
       .deleteUnusedByUserId(
         user.id
       );
@@ -51,7 +53,7 @@ export class ResendVerificationService {
     const token =
       generateToken();
 
-    await this.verificationRepo.create({
+    await verificationRepo.create({
       userId: user.id,
       token,
       expiredAt: addHours(
@@ -65,4 +67,5 @@ export class ResendVerificationService {
         "Verification email sent"
     };
   }
-}
+
+});

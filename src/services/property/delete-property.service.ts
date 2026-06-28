@@ -5,37 +5,32 @@ import {
   PropertyRepository
 } from "../../repositories/property/property.repository";
 
-export class DeletePropertyService {
 
-  constructor(
-    private repository =
-      new PropertyRepository()
-  ) {}
+export const deleteProperty = (
+  repository = PropertyRepository()
+) => async (
+  tenantId: string,
+  propertyId: string
+) => {
 
-  async execute(
-    tenantId: string,
-    propertyId: string
-  ) {
-
-    const property =
-      await this.repository.findById(
-        propertyId,
-        tenantId
-      );
-
-    if (!property) {
-      throw new NotFoundError(
-        "Property not found"
-      );
-    }
-
-    await this.repository.softDelete(
-      propertyId
+  const property =
+    await repository.findById(
+      propertyId,
+      tenantId
     );
 
-    return {
-      message:
-        "Property deleted successfully"
-    };
+  if (!property) {
+    throw new NotFoundError(
+      "Property not found"
+    );
   }
-}
+
+  await repository.softDelete(
+    propertyId
+  );
+
+  return {
+    message:
+      "Property deleted successfully"
+  };
+};

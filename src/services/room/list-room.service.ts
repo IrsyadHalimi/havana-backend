@@ -10,56 +10,49 @@ import {
   paginatedResponse
 } from "../../utils/query/paginated-response";
 
-export class ListRoomService {
 
-  constructor(
-    private repository =
-      new RoomRepository()
-  ) {}
+export const listRoom = (
+  repository = RoomRepository()
+) => async (
+  tenantId: string,
+  propertyId: string,
+  query: any
+) => {
 
-  async execute(
-    tenantId: string,
-    propertyId: string,
-    query: any
-  ) {
+  const page =
+    Number(query.page || 1);
 
-    const page =
-      Number(query.page || 1);
+  const limit =
+    Number(query.limit || 10);
 
-    const limit =
-      Number(query.limit || 10);
+  const {
+    skip,
+    take
+  } = getPagination(
+    page,
+    limit
+  );
 
-    const {
+  const data =
+    await repository.findAllByProperty(
+      propertyId,
+      tenantId,
       skip,
-      take
-    } = getPagination(
-      page,
-      limit
+      take,
+      query.search
     );
 
-    const data =
-      await this.repository
-        .findAllByProperty(
-          propertyId,
-          tenantId,
-          skip,
-          take,
-          query.search
-        );
-
-    const total =
-      await this.repository
-        .countByProperty(
-          propertyId,
-          tenantId,
-          query.search
-        );
-
-    return paginatedResponse(
-      data,
-      total,
-      page,
-      limit
+  const total =
+    await repository.countByProperty(
+      propertyId,
+      tenantId,
+      query.search
     );
-  }
-}
+
+  return paginatedResponse(
+    data,
+    total,
+    page,
+    limit
+  );
+};

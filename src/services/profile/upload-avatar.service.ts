@@ -1,27 +1,20 @@
-import { ProfileRepository }
+import { profileRepository }
 from "../../repositories/profile/profile.repository";
 
-export class UploadAvatarService {
 
-  constructor(
-    private profileRepo =
-      new ProfileRepository()
-  ) {}
+export const uploadAvatar = (
+  profileRepo = profileRepository()
+) => async (
+  userId: string,
+  avatar: string
+) => {
 
-  async execute(
-    userId: string,
-    avatar: string
-  ) {
+  await profileRepo.updateAvatar(
+    userId,
+    avatar
+  );
 
-    await this.profileRepo
-      .updateAvatar(
-        userId,
-        avatar
-      );
-
-    return {
-      message:
-        "Avatar uploaded"
-    };
-  }
-}
+  return {
+    message: "Avatar uploaded"
+  };
+};

@@ -1,13 +1,13 @@
 import { prisma }
 from "../../config/prisma";
 
-export class PropertyRepository {
+export const PropertyRepository = () => ({
 
   create(data: any) {
     return prisma.property.create({
       data
     });
-  }
+  },
 
   findBySlug(slug: string) {
     return prisma.property.findUnique({
@@ -15,7 +15,7 @@ export class PropertyRepository {
         slug
       }
     });
-  }
+  },
 
   findCategory(
     categoryId: string,
@@ -28,7 +28,7 @@ export class PropertyRepository {
         deletedAt: null
       }
     });
-  }
+  },
 
   findById(
     id: string,
@@ -44,7 +44,7 @@ export class PropertyRepository {
         category: true
       }
     });
-  }
+  },
 
   async findAll({
     tenantId,
@@ -97,7 +97,7 @@ export class PropertyRepository {
           order || "desc"
       }
     });
-  }
+  },
 
   count(
     tenantId: string,
@@ -126,7 +126,7 @@ export class PropertyRepository {
         })
       }
     });
-  }
+  },
 
   update(
     id: string,
@@ -138,7 +138,7 @@ export class PropertyRepository {
       },
       data
     });
-  }
+  },
 
   softDelete(id: string) {
     return prisma.property.update({
@@ -149,7 +149,7 @@ export class PropertyRepository {
         deletedAt: new Date()
       }
     });
-  }
+  },
 
   findBySlugExceptId(
     slug: string,
@@ -163,5 +163,5 @@ export class PropertyRepository {
         }
       }
     });
-  }
-}
+  },
+});

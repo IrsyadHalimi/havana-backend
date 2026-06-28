@@ -13,9 +13,9 @@ import { asyncHandler }
 from "../utils/async-handler";
 
 import {
-  CreateAvailabilityController
+  createAvailability
 }
-from "../controllers/availability/create-availability.controller";
+from "../controllers/availability/availability.controller";
 
 import {
   createAvailabilitySchema
@@ -36,8 +36,7 @@ router.post(
     createAvailabilitySchema
   ),
   asyncHandler(
-    new CreateAvailabilityController()
-      .handle
+    createAvailability
   )
 );
 

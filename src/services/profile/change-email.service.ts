@@ -1,30 +1,34 @@
 import { addHours } from "date-fns";
 
-import { AppError } from "../../errors/app.error";
+import {
+  AppError
+} from "../../errors/app.error";
 
-import { generateToken } from "../../utils/token";
+import {
+  generateToken
+} from "../../utils/token";
 
-import { UserRepository } from "../../repositories/auth/user.repository";
+import {
+  userRepository
+} from "../../repositories/auth/user.repository";
 
-import { EmailVerificationRepository } from "../../repositories/auth/email-verification.repository";
+import {
+  emailVerificationRepository
+} from "../../repositories/auth/email-verification.repository";
 
-export class ChangeEmailService {
 
-  constructor(
-    private userRepo =
-      new UserRepository(),
+export const changeEmailService = (
+  userRepo = userRepository(),
+  verificationRepo = emailVerificationRepository()
+) => ({
 
-    private verificationRepo =
-      new EmailVerificationRepository()
-  ) {}
-
-  async execute(
+  execute: async (
     userId: string,
     email: string
-  ) {
+  ) => {
 
     const user =
-      await this.userRepo.findById(
+      await userRepo.findById(
         userId
       );
 
@@ -43,7 +47,7 @@ export class ChangeEmailService {
     }
 
     const existingEmail =
-      await this.userRepo.findByEmail(
+      await userRepo.findByEmail(
         email
       );
 
@@ -54,18 +58,19 @@ export class ChangeEmailService {
       );
     }
 
-    await this.userRepo.updateEmail(
+    await userRepo.updateEmail(
       userId,
       email
     );
 
-    await this.verificationRepo
-      .deleteByUserId(userId);
+    await verificationRepo.deleteByUserId(
+      userId
+    );
 
     const token =
       generateToken();
 
-    await this.verificationRepo.create({
+    await verificationRepo.create({
       userId,
       token,
       expiredAt: addHours(
@@ -84,4 +89,5 @@ export class ChangeEmailService {
         "Verification email sent"
     };
   }
-}
+
+});

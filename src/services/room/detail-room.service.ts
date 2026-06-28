@@ -5,30 +5,25 @@ import {
   RoomRepository
 } from "../../repositories/room/room.repository";
 
-export class DetailRoomService {
 
-  constructor(
-    private repository =
-      new RoomRepository()
-  ) {}
+export const detailRoom = (
+  repository = RoomRepository()
+) => async (
+  tenantId: string,
+  roomId: string
+) => {
 
-  async execute(
-    tenantId: string,
-    roomId: string
-  ) {
+  const room =
+    await repository.findById(
+      roomId,
+      tenantId
+    );
 
-    const room =
-      await this.repository.findById(
-        roomId,
-        tenantId
-      );
-
-    if (!room) {
-      throw new NotFoundError(
-        "Room not found"
-      );
-    }
-
-    return room;
+  if (!room) {
+    throw new NotFoundError(
+      "Room not found"
+    );
   }
-}
+
+  return room;
+};

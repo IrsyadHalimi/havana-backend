@@ -1,108 +1,109 @@
-import { prisma }
-from "../../config/prisma";
+import { prisma } from "../../config/prisma";
 
-export class UserRepository {
-
-  create(data:any) {
+export const userRepository = () => ({
+  create: (data: any) => {
     return prisma.user.create({
-      data
+      data,
     });
-  }
+  },
 
-  findByEmail(email:string) {
+  findByEmail: (email: string) => {
     return prisma.user.findUnique({
-      where:{ email }
+      where: {
+        email,
+      },
     });
-  }
+  },
 
-  findById(id:string) {
+  findById: (id: string) => {
     return prisma.user.findUnique({
-      where:{ id }
+      where: {
+        id,
+      },
     });
-  }
+  },
 
-  verifyUser(
+  verifyUser: (
     userId: string,
     hashedPassword: string
-  ) {
+  ) => {
     return prisma.user.update({
       where: {
-        id: userId
+        id: userId,
       },
       data: {
         password: hashedPassword,
         isVerified: true,
-        emailVerifiedAt: new Date()
-      }
+        emailVerifiedAt: new Date(),
+      },
     });
-  }
+  },
 
-  updatePassword(
+  updatePassword: (
     userId: string,
     password: string
-  ) {
+  ) => {
     return prisma.user.update({
       where: {
-        id: userId
+        id: userId,
       },
       data: {
-        password
-      }
+        password,
+      },
     });
-  }
+  },
 
-  updateRefreshToken(
+  updateRefreshToken: (
     userId: string,
     refreshToken: string
-  ) {
+  ) => {
     return prisma.user.update({
       where: {
-        id: userId
+        id: userId,
       },
       data: {
         refreshToken,
-        lastLoginAt:
-          new Date()
-      }
+        lastLoginAt: new Date(),
+      },
     });
-  }
+  },
 
-  findByRefreshToken(
+  findByRefreshToken: (
     refreshToken: string
-  ) {
+  ) => {
     return prisma.user.findFirst({
       where: {
-        refreshToken
-      }
+        refreshToken,
+      },
     });
-  }
+  },
 
-  removeRefreshToken(
+  removeRefreshToken: (
     userId: string
-  ) {
+  ) => {
     return prisma.user.update({
       where: {
-        id: userId
+        id: userId,
       },
       data: {
-        refreshToken: null
-      }
+        refreshToken: null,
+      },
     });
-  }
+  },
 
-  updateEmail(
+  updateEmail: (
     userId: string,
     email: string
-  ) {
+  ) => {
     return prisma.user.update({
       where: {
-        id: userId
+        id: userId,
       },
       data: {
         email,
         isVerified: false,
-        emailVerifiedAt: null
-      }
+        emailVerifiedAt: null,
+      },
     });
-  }
-}
+  },
+});

@@ -1,43 +1,41 @@
-import { prisma }
-from "../../config/prisma";
+import { prisma } from "../../config/prisma";
 
-export class PasswordResetRepository {
-
-  create(data: any) {
+export const passwordResetRepository = () => ({
+  create: (data: any) => {
     return prisma.passwordReset.create({
-      data
+      data,
     });
-  }
+  },
 
-  findValidToken(token: string) {
+  findValidToken: (token: string) => {
     return prisma.passwordReset.findFirst({
       where: {
         token,
-        usedAt: null
+        usedAt: null,
       },
       include: {
-        user: true
-      }
+        user: true,
+      },
     });
-  }
+  },
 
-  markUsed(id: number) {
+  markUsed: (id: number) => {
     return prisma.passwordReset.update({
-      where: { id },
+      where: {
+        id,
+      },
       data: {
-        usedAt: new Date()
-      }
+        usedAt: new Date(),
+      },
     });
-  }
+  },
 
-  deleteUnusedByUserId(
-    userId: string
-  ) {
+  deleteUnusedByUserId: (userId: string) => {
     return prisma.passwordReset.deleteMany({
       where: {
         userId,
-        usedAt: null
-      }
+        usedAt: null,
+      },
     });
-  }
-}
+  },
+});

@@ -12,7 +12,7 @@ interface FindAllParams {
   take: number;
 }
 
-export class PropertyCategoryRepository {
+export const PropertyCategoryRepository = () => ({
 
   create(
     tenantId: string,
@@ -24,7 +24,7 @@ export class PropertyCategoryRepository {
         name
       }
     });
-  }
+  },
 
   findById(id: string) {
     return prisma.propertyCategory.findFirst({
@@ -33,7 +33,7 @@ export class PropertyCategoryRepository {
         deletedAt: null
       }
     });
-  }
+  },
 
   findByName(
     tenantId: string,
@@ -46,7 +46,7 @@ export class PropertyCategoryRepository {
         deletedAt: null
       }
     });
-  }
+  },
 
   findAll(params: FindAllParams) {
 
@@ -77,7 +77,7 @@ export class PropertyCategoryRepository {
         order
       )
     });
-  }
+  },
 
   count(
     tenantId: string,
@@ -95,7 +95,7 @@ export class PropertyCategoryRepository {
         })
       }
     });
-  }
+  },
 
   update(
     id: string,
@@ -109,7 +109,7 @@ export class PropertyCategoryRepository {
         name
       }
     });
-  }
+  },
 
   softDelete(id: string) {
     return prisma.propertyCategory.update({
@@ -120,7 +120,7 @@ export class PropertyCategoryRepository {
         deletedAt: new Date()
       }
     });
-  }
+  },
 
   findByIdAndTenant(
     id: string,
@@ -133,7 +133,7 @@ export class PropertyCategoryRepository {
         deletedAt: null
       }
     });
-  }
+  },
 
   findPropertyUsage(
     categoryId: string
@@ -144,5 +144,5 @@ export class PropertyCategoryRepository {
         deletedAt: null
       }
     });
-  }
-}
+  },
+});

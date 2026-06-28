@@ -1,32 +1,31 @@
-import { AppError }
-from "../../errors/app.error";
-
-import { NotFoundError }
-from "../../errors/not-found.error";
+import {
+  AppError
+} from "../../errors/app.error";
 
 import {
-  AvailabilityRepository
-}
-from "../../repositories/availability/availability.repository";
+  NotFoundError
+} from "../../errors/not-found.error";
 
-export class CreateAvailabilityService {
+import {
+  createAvailabilityRepository
+} from "../../repositories/availability/availability.repository";
 
-  constructor(
-    private repository =
-      new AvailabilityRepository()
-  ) {}
 
-  async execute(
+export const createAvailabilityService = (
+  repository = createAvailabilityRepository()
+) => ({
+
+  execute: async (
     tenantId: string,
     roomId: string,
     payload: {
       date: string;
       availableRooms: number;
     }
-  ) {
+  ) => {
 
     const room =
-      await this.repository.findRoom(
+      await repository.findRoom(
         roomId,
         tenantId
       );
@@ -38,11 +37,10 @@ export class CreateAvailabilityService {
     }
 
     const existing =
-      await this.repository
-        .findByRoomAndDate(
-          roomId,
-          new Date(payload.date)
-        );
+      await repository.findByRoomAndDate(
+        roomId,
+        new Date(payload.date)
+      );
 
     if (existing) {
       throw new AppError(
@@ -55,20 +53,18 @@ export class CreateAvailabilityService {
       payload.availableRooms >
       room.totalRoom
     ) {
-
       throw new AppError(
         "Available room exceeds room stock",
         400
       );
-
     }
 
-    return this.repository.create({
+    return repository.create({
       roomId,
-      date:
-        new Date(payload.date),
+      date: new Date(payload.date),
       availableRooms:
         payload.availableRooms
     });
   }
-}
+
+});

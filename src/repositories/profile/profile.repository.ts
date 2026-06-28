@@ -1,12 +1,12 @@
 import { prisma } from "../../config/prisma";
 
-export class ProfileRepository {
+export const profileRepository = () =>({
 
   findById(id: string) {
     return prisma.user.findUnique({
       where: { id }
     });
-  }
+  },
 
   updateProfile(
     id: string,
@@ -19,7 +19,7 @@ export class ProfileRepository {
       where: { id },
       data
     });
-  }
+  },
 
   updateAvatar(
     userId: string,
@@ -34,4 +34,4 @@ export class ProfileRepository {
       }
     });
   }
-}
+});

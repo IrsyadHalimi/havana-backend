@@ -1,9 +1,6 @@
-import { AppError } from "./app.error";
+import { AppError, createAppError } from "./app.error";
 
-export class ConflictError
-extends AppError {
-
-  constructor(message:string) {
-    super(message,409);
-  }
-}
+// Kita gunakan tipe AppError yang sudah dibuat sebelumnya
+export const createConflictError = (message: string): AppError => {
+  return createAppError(message, 409);
+};

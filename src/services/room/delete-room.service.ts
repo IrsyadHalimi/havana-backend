@@ -5,37 +5,32 @@ import {
   RoomRepository
 } from "../../repositories/room/room.repository";
 
-export class DeleteRoomService {
 
-  constructor(
-    private repository =
-      new RoomRepository()
-  ) {}
+export const deleteRoom = (
+  repository = RoomRepository()
+) => async (
+  tenantId: string,
+  roomId: string
+) => {
 
-  async execute(
-    tenantId: string,
-    roomId: string
-  ) {
-
-    const room =
-      await this.repository.findById(
-        roomId,
-        tenantId
-      );
-
-    if (!room) {
-      throw new NotFoundError(
-        "Room not found"
-      );
-    }
-
-    await this.repository.softDelete(
-      roomId
+  const room =
+    await repository.findById(
+      roomId,
+      tenantId
     );
 
-    return {
-      message:
-        "Room deleted successfully"
-    };
+  if (!room) {
+    throw new NotFoundError(
+      "Room not found"
+    );
   }
-}
+
+  await repository.softDelete(
+    roomId
+  );
+
+  return {
+    message:
+      "Room deleted successfully"
+  };
+};

@@ -5,35 +5,29 @@ import {
   RoomRepository
 } from "../../repositories/room/room.repository";
 
-export class CreateRoomService {
 
-  constructor(
-    private repository =
-      new RoomRepository()
-  ) {}
+export const createRoom = (
+  repository = RoomRepository()
+) => async (
+  tenantId: string,
+  propertyId: string,
+  payload: any
+) => {
 
-  async execute(
-    tenantId: string,
-    propertyId: string,
-    payload: any
-  ) {
-
-    const property =
-      await this.repository
-        .findProperty(
-          propertyId,
-          tenantId
-        );
-
-    if (!property) {
-      throw new NotFoundError(
-        "Property not found"
-      );
-    }
-
-    return this.repository.create({
+  const property =
+    await repository.findProperty(
       propertyId,
-      ...payload
-    });
+      tenantId
+    );
+
+  if (!property) {
+    throw new NotFoundError(
+      "Property not found"
+    );
   }
-}
+
+  return repository.create({
+    propertyId,
+    ...payload
+  });
+};

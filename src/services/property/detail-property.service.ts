@@ -5,30 +5,25 @@ import {
   PropertyRepository
 } from "../../repositories/property/property.repository";
 
-export class DetailPropertyService {
 
-  constructor(
-    private repository =
-      new PropertyRepository()
-  ) {}
+export const detailProperty = (
+  repository = PropertyRepository()
+) => async (
+  tenantId: string,
+  propertyId: string
+) => {
 
-  async execute(
-    tenantId: string,
-    propertyId: string
-  ) {
+  const property =
+    await repository.findById(
+      propertyId,
+      tenantId
+    );
 
-    const property =
-      await this.repository.findById(
-        propertyId,
-        tenantId
-      );
-
-    if (!property) {
-      throw new NotFoundError(
-        "Property not found"
-      );
-    }
-
-    return property;
+  if (!property) {
+    throw new NotFoundError(
+      "Property not found"
+    );
   }
-}
+
+  return property;
+};

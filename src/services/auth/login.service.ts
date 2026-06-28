@@ -12,24 +12,20 @@ import {
 } from "../../errors/unauthorized.error";
 
 import {
-  UserRepository
+  userRepository
 } from "../../repositories/auth/user.repository";
 
-export class LoginService {
 
-  constructor(
-    private userRepo =
-      new UserRepository()
-  ) {}
-
-  async execute(
+export const loginService = () => ({
+  execute: async (
     email: string,
     password: string
-  ) {
+  ) => {
+    const userRepo =
+      userRepository();
 
     const user =
-      await this.userRepo
-        .findByEmail(email);
+      await userRepo.findByEmail(email);
 
     if (!user) {
       throw new UnauthorizedError(
@@ -70,11 +66,10 @@ export class LoginService {
         payload
       );
 
-    await this.userRepo
-      .updateRefreshToken(
-        user.id,
-        refreshToken
-      );
+    await userRepo.updateRefreshToken(
+      user.id,
+      refreshToken
+    );
 
     return {
       accessToken,
@@ -83,9 +78,8 @@ export class LoginService {
         id: user.id,
         email: user.email,
         role: user.role,
-        fullName:
-          user.fullName
+        fullName: user.fullName
       }
     };
   }
-}
+});

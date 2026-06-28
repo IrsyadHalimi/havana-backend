@@ -1,54 +1,56 @@
 import { addHours } from "date-fns";
 
-import { UserRepository }
-from "../../repositories/auth/user.repository";
+import {
+  userRepository
+} from "../../repositories/auth/user.repository";
 
-import { EmailVerificationRepository }
-from "../../repositories/auth/email-verification.repository";
+import {
+  emailVerificationRepository
+} from "../../repositories/auth/email-verification.repository";
 
-import { generateToken }
-from "../../utils/token";
+import {
+  generateToken
+} from "../../utils/token";
 
-import { ConflictError }
-from "../../errors/conflict.error";
+import {
+  ConflictError
+} from "../../errors/conflict.error";
 
-export class RegisterService {
 
-  constructor(
-    private userRepo =
-      new UserRepository(),
+export const registerService = (
+  userRepo = userRepository(),
+  verificationRepo = emailVerificationRepository()
+) => ({
 
-    private verificationRepo =
-      new EmailVerificationRepository()
-  ) {}
-
-  async execute(data:any) {
+  execute: async (
+    data: any
+  ) => {
 
     const existing =
-      await this.userRepo.findByEmail(
+      await userRepo.findByEmail(
         data.email
       );
 
-    if(existing){
+    if (existing) {
       throw new ConflictError(
         "Email already registered"
       );
     }
 
     const user =
-      await this.userRepo.create({
-        fullName:data.fullName,
-        email:data.email,
-        role:data.role
+      await userRepo.create({
+        fullName: data.fullName,
+        email: data.email,
+        role: data.role
       });
 
     const token =
       generateToken();
 
-    await this.verificationRepo.create({
-      userId:user.id,
+    await verificationRepo.create({
+      userId: user.id,
       token,
-      expiredAt:addHours(
+      expiredAt: addHours(
         new Date(),
         1
       )
@@ -61,8 +63,8 @@ export class RegisterService {
 
     return {
       message:
-      "Registration success. Please verify email."
+        "Registration success. Please verify email."
     };
   }
 
-}
+});

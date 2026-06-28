@@ -1,36 +1,38 @@
-import { hashPassword }
-from "../../utils/password";
+import {
+  hashPassword
+} from "../../utils/password";
 
-import { NotFoundError }
-from "../../errors/not-found.error";
+import {
+  NotFoundError
+} from "../../errors/not-found.error";
 
-import { AppError }
-from "../../errors/app.error";
+import {
+  AppError
+} from "../../errors/app.error";
 
-import { UserRepository }
-from "../../repositories/auth/user.repository";
+import {
+  userRepository
+} from "../../repositories/auth/user.repository";
 
-import { EmailVerificationRepository }
-from "../../repositories/auth/email-verification.repository";
+import {
+  emailVerificationRepository
+} from "../../repositories/auth/email-verification.repository";
 
-export class VerifyEmailService {
 
-  constructor(
-    private userRepo =
-      new UserRepository(),
+export const verifyEmailService = (
+  userRepo = userRepository(),
+  verificationRepo = emailVerificationRepository()
+) => ({
 
-    private verificationRepo =
-      new EmailVerificationRepository()
-  ) {}
-
-  async execute(
+  execute: async (
     token: string,
     password: string
-  ) {
+  ) => {
 
     const verification =
-      await this.verificationRepo
-        .findValidToken(token);
+      await verificationRepo.findValidToken(
+        token
+      );
 
     if (!verification) {
       throw new NotFoundError(
@@ -49,14 +51,16 @@ export class VerifyEmailService {
     }
 
     const hashedPassword =
-      await hashPassword(password);
+      await hashPassword(
+        password
+      );
 
-    await this.userRepo.verifyUser(
+    await userRepo.verifyUser(
       verification.userId,
       hashedPassword
     );
 
-    await this.verificationRepo.markUsed(
+    await verificationRepo.markUsed(
       verification.id
     );
 
@@ -65,4 +69,5 @@ export class VerifyEmailService {
         "Email verified successfully"
     };
   }
-}
+
+});

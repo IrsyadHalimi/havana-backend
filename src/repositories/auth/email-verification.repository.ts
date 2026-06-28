@@ -1,50 +1,49 @@
-import { prisma }
-from "../../config/prisma";
+import { prisma } from "../../config/prisma";
 
-export class EmailVerificationRepository {
-  create(data:any) {
+export const emailVerificationRepository = () => ({
+  create: (data: any) => {
     return prisma.emailVerification.create({
-      data
+      data,
     });
-  }
+  },
 
-  findValidToken(token: string) {
+  findValidToken: (token: string) => {
     return prisma.emailVerification.findFirst({
-        where: {
+      where: {
         token,
-        usedAt: null
-        },
-        include: {
-        user: true
-        }
+        usedAt: null,
+      },
+      include: {
+        user: true,
+      },
     });
-  }
+  },
 
-  markUsed(id: number) {
+  markUsed: (id: number) => {
     return prisma.emailVerification.update({
-        where: { id },
-        data: {
-        usedAt: new Date()
-        }
+      where: {
+        id,
+      },
+      data: {
+        usedAt: new Date(),
+      },
     });
-  }
+  },
 
-  deleteUnusedByUserId(
-    userId: string
-  ) {
+  deleteUnusedByUserId: (userId: string) => {
     return prisma.emailVerification.deleteMany({
       where: {
         userId,
-        usedAt: null
-      }
+        usedAt: null,
+      },
     });
-  }
+  },
 
-  deleteByUserId(userId: string) {
+  deleteByUserId: (userId: string) => {
     return prisma.emailVerification.deleteMany({
       where: {
-        userId
-      }
+        userId,
+      },
     });
-  }
-}
+  },
+});

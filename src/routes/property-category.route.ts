@@ -12,43 +12,19 @@ from "../middleware/validation.middleware";
 import { asyncHandler }
 from "../utils/async-handler";
 
-import { CreateCategoryController }
-from "../controllers/property-category/create-category.controller";
-
-import { ListCategoryController }
-from "../controllers/property-category/list-category.controller";
+import { PropertyCategoryController }
+from "../controllers/property-category/property-category.controller";
 
 import { createCategorySchema }
 from "../validators/property-category/create-category.validator";
-
-import { DetailCategoryController }
-from "../controllers/property-category/detail-category.controller";
-
-import { UpdateCategoryController }
-from "../controllers/property-category/update-category.controller";
-
-import { DeleteCategoryController }
-from "../controllers/property-category/delete-category.controller";
 
 import { updateCategorySchema }
 from "../validators/property-category/update-category.validator";
 
 const router = Router();
 
-const createController =
-  new CreateCategoryController();
-
-const listController =
-  new ListCategoryController();
-
-const detailController =
-  new DetailCategoryController();
-
-const updateController =
-  new UpdateCategoryController();
-
-const deleteController =
-  new DeleteCategoryController();
+const controller =
+  new PropertyCategoryController();
 
 router.use(
   authMiddleware
@@ -64,21 +40,21 @@ router.post(
     createCategorySchema
   ),
   asyncHandler(
-    createController.handle
+    controller.create
   )
 );
 
 router.get(
   "/",
   asyncHandler(
-    listController.handle
+    controller.list
   )
 );
 
 router.get(
   "/:id",
   asyncHandler(
-    detailController.handle
+    controller.detail
   )
 );
 
@@ -88,14 +64,14 @@ router.patch(
     updateCategorySchema
   ),
   asyncHandler(
-    updateController.handle
+    controller.update
   )
 );
 
 router.delete(
   "/:id",
   asyncHandler(
-    deleteController.handle
+    controller.delete
   )
 );
 

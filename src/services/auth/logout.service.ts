@@ -1,26 +1,13 @@
-import {
-  UserRepository
-} from "../../repositories/auth/user.repository";
+import { userRepository } from "../../repositories/auth/user.repository";
 
-export class LogoutService {
-
-  constructor(
-    private userRepo =
-      new UserRepository()
-  ) {}
-
-  async execute(
-    userId: string
-  ) {
-
-    await this.userRepo
-      .removeRefreshToken(
-        userId
-      );
+export const logoutService = (
+  userRepo = userRepository()
+) => ({
+  execute: async (userId: string) => {
+    await userRepo.removeRefreshToken(userId);
 
     return {
-      message:
-        "Logout success"
+      message: "Logout success",
     };
-  }
-}
+  },
+});

@@ -1,6 +1,6 @@
 import { prisma } from "../../config/prisma";
 
-export class RoomRepository {
+export const RoomRepository = () => ({
 
   create(data: {
     propertyId: string;
@@ -13,7 +13,7 @@ export class RoomRepository {
     return prisma.propertyRoom.create({
       data
     });
-  }
+  },
 
   findProperty(
     propertyId: string,
@@ -26,7 +26,7 @@ export class RoomRepository {
         deletedAt: null
       }
     });
-  }
+  },
 
   findById(
     roomId: string,
@@ -52,7 +52,7 @@ export class RoomRepository {
         }
       }
     });
-  }
+  },
 
   findAllByProperty(
     propertyId: string,
@@ -86,7 +86,7 @@ export class RoomRepository {
         createdAt: "desc"
       }
     });
-  }
+  },
 
   countByProperty(
     propertyId: string,
@@ -111,7 +111,7 @@ export class RoomRepository {
         })
       }
     });
-  }
+  },
 
   update(
     roomId: string,
@@ -123,7 +123,7 @@ export class RoomRepository {
       },
       data
     });
-  }
+  },
 
   softDelete(
     roomId: string
@@ -136,6 +136,6 @@ export class RoomRepository {
         deletedAt: new Date()
       }
     });
-  }
+  },
   
-}
+});

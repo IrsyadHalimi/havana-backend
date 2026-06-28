@@ -1,66 +1,57 @@
-
 import {
   PropertyCategoryRepository
-}
-from "../../repositories/property-category/property-category.repository";
+} from "../../repositories/property-category/property-category.repository";
 
 import {
   getPagination
-}
-from "../../utils/pagination";
+} from "../../utils/pagination";
 
 import {
   paginatedResponse
-}
-from "../../utils/paginated-reponse";
+} from "../../utils/paginated-reponse";
 
-export class ListCategoryService {
 
-  constructor(
-    private repository =
-      new PropertyCategoryRepository()
-  ) {}
+export const listCategory = (
+  repository = PropertyCategoryRepository()
+) => async (
+  tenantId: string,
+  query: any
+) => {
 
-  async execute(
-    tenantId: string,
-    query: any
-  ) {
+  const page =
+    Number(query.page || 1);
 
-    const page =
-      Number(query.page || 1);
+  const limit =
+    Number(query.limit || 10);
 
-    const limit =
-      Number(query.limit || 10);
+  const {
+    skip,
+    take
+  } = getPagination(
+    page,
+    limit
+  );
 
-    const {
+  const data =
+    await repository.findAll({
+      tenantId,
+      search: query.search,
+      sort: query.sort,
+      order: query.order,
       skip,
       take
-    } = getPagination(
-      page,
-      limit
+    });
+
+  const total =
+    await repository.count(
+      tenantId,
+      query.search
     );
 
-    const data =
-      await this.repository.findAll({
-        tenantId,
-        search: query.search,
-        sort: query.sort,
-        order: query.order,
-        skip,
-        take
-      });
-
-    const total =
-      await this.repository.count(
-        tenantId,
-        query.search
-      );
-
-    return paginatedResponse(
-      data,
-      total,
-      page,
-      limit
-    );
-  }
-}
+  return paginatedResponse(
+    data,
+    total,
+    page,
+    limit
+  );
+};

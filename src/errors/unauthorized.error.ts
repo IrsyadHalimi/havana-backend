@@ -1,9 +1,5 @@
-import { AppError } from "./app.error";
+import { createAppError } from "./app.error";
 
-export class UnauthorizedError
-extends AppError {
-
-  constructor(message:string) {
-    super(message,401);
-  }
-}
+export const UnauthorizedError = (message: string) => {
+  return createAppError(message, 401);
+};

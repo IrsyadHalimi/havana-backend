@@ -9,53 +9,46 @@ import {
   generateSlug
 } from "../../utils/slug";
 
-export class CreatePropertyService {
 
-  constructor(
-    private repository =
-      new PropertyRepository()
-  ) {}
+export const createProperty = (
+  repository = PropertyRepository()
+) => async (
+  tenantId: string,
+  payload: any
+) => {
 
-  async execute(
-    tenantId: string,
-    payload: any
-  ) {
+  const category =
+    await repository.findCategory(
+      payload.categoryId,
+      tenantId
+    );
 
-    const category =
-      await this.repository
-        .findCategory(
-          payload.categoryId,
-          tenantId
-        );
-
-    if (!category) {
-      throw new AppError(
-        "Category not found",
-        404
-      );
-    }
-
-    let slug =
-      generateSlug(
-        payload.name
-      );
-
-    let counter = 1;
-
-    while (
-      await this.repository
-        .findBySlug(slug)
-    ) {
-      slug =
-        `${generateSlug(payload.name)}-${counter}`;
-
-      counter++;
-    }
-
-    return this.repository.create({
-      ...payload,
-      tenantId,
-      slug
-    });
+  if (!category) {
+    throw new AppError(
+      "Category not found",
+      404
+    );
   }
-}
+
+  let slug =
+    generateSlug(
+      payload.name
+    );
+
+  let counter = 1;
+
+  while (
+    await repository.findBySlug(slug)
+  ) {
+    slug =
+      `${generateSlug(payload.name)}-${counter}`;
+
+    counter++;
+  }
+
+  return repository.create({
+    ...payload,
+    tenantId,
+    slug
+  });
+};

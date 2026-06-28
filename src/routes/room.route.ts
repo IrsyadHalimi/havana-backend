@@ -13,24 +13,8 @@ import { asyncHandler }
 from "../utils/async-handler";
 
 import {
-  CreateRoomController
-} from "../controllers/room/create-room.controller";
-
-import {
-  ListRoomController
-} from "../controllers/room/list-room.controller";
-
-import {
-  DetailRoomController
-} from "../controllers/room/detail-room.controller";
-
-import {
-  UpdateRoomController
-} from "../controllers/room/update-room.controller";
-
-import {
-  DeleteRoomController
-} from "../controllers/room/delete-room.controller";
+  RoomController
+} from "../controllers/room/room.controller";
 
 import {
   createRoomSchema
@@ -48,40 +32,40 @@ router.post(
   "/properties/:propertyId/rooms",
   validate(createRoomSchema),
   asyncHandler(
-    new CreateRoomController()
-      .handle
+    new RoomController()
+      .create
   )
 );
 
 router.get(
   "/properties/:propertyId/rooms",
   asyncHandler(
-    new ListRoomController()
-      .handle
+    new RoomController()
+      .list
   )
 );
 
 router.get(
   "/rooms/:id",
   asyncHandler(
-    new DetailRoomController()
-      .handle
+    new RoomController()
+      .detail
   )
 );
 
 router.patch(
   "/rooms/:id",
   asyncHandler(
-    new UpdateRoomController()
-      .handle
+    new RoomController()
+      .update
   )
 );
 
 router.delete(
   "/rooms/:id",
   asyncHandler(
-    new DeleteRoomController()
-      .handle
+    new RoomController()
+      .delete
   )
 );
 

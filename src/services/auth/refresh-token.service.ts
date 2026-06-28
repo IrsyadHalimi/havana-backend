@@ -4,19 +4,17 @@ import {
 } from "../../utils/jwt";
 
 import {
-  UserRepository
+  userRepository
 } from "../../repositories/auth/user.repository";
 
-export class RefreshTokenService {
 
-  constructor(
-    private userRepo =
-      new UserRepository()
-  ) {}
+export const refreshTokenService = (
+  userRepo = userRepository()
+) => ({
 
-  async execute(
+  execute: async (
     refreshToken: string
-  ) {
+  ) => {
 
     const payload =
       verifyRefreshToken(
@@ -24,10 +22,9 @@ export class RefreshTokenService {
       ) as any;
 
     const user =
-      await this.userRepo
-        .findByRefreshToken(
-          refreshToken
-        );
+      await userRepo.findByRefreshToken(
+        refreshToken
+      );
 
     if (!user) {
       throw new Error(
@@ -43,4 +40,5 @@ export class RefreshTokenService {
         })
     };
   }
-}
+
+});
